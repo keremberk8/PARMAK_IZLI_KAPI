@@ -1,74 +1,76 @@
-# Parmak İzli Kapı
+<div align="center">
 
-Okul ortamında oda girişini otomatikleştirmek için geliştirilen, **parmak izi ve RFID kart doğrulamasını** aynı sistemde birleştiren Arduino tabanlı erişim kontrol projesidir.
+# 🔐 Parmak İzli Kapı
 
-Sistem; yetkili kullanıcıları parmak izi veya kart üzerinden tanır, LCD ekran üzerinden durum bilgisi verir, NeoPixel ve buzzer ile geri bildirim sağlar ve başarılı doğrulamada kapı mekanizmasını tetikler. Kod yapısında ayrıca MZ-80 sensörü ile kapı açma senaryosu bulunur.
+**RFID + Fingerprint • Arduino • Otomatik Erişim Kontrolü**
 
-## ✨ Özellikler
+Kayıtlı kullanıcıları iki farklı kimlik doğrulama yöntemiyle kontrol eden embedded access-control prototipi.
 
-- 🔐 Parmak izi ile kimlik doğrulama
-- 💳 RFID kart ile giriş
-- 🚪 Otomatik kapı kontrolü
-- 📟 20x4 I2C LCD durum ekranı
-- 💡 NeoPixel LED durum animasyonları
-- 🔊 Başarılı ve hatalı giriş için sesli geri bildirim
-- 📡 MZ-80 sensörü ile ek giriş senaryosu
-- 👤 Kullanıcı bazlı parmak izi ve kart eşleştirme
+<img src="docs/flow.svg" alt="Sistem akışı" width="900">
 
-## 🛠️ Donanım ve Teknolojiler
+</div>
 
-- Arduino
-- Adafruit Fingerprint Sensor
-- RFID RC522 / uyumlu RFID modülü
-- 20x4 I2C LCD
-- Adafruit NeoPixel
-- MZ-80 sensörü
-- Buzzer
-- Kapı motoru / röle mekanizması
+---
 
-### Kullanılan Arduino kütüphaneleri
+## ✨ Öne Çıkanlar
 
-- `Adafruit_Fingerprint`
-- `Wire`
-- `LiquidCrystal_I2C`
-- `RFID`
-- `SPI`
-- `Adafruit_NeoPixel`
+- 🔐 Parmak izi doğrulama
+- 💳 RFID kart/UID kontrolü
+- 🚪 Motor veya röle ile kapı tetikleme
+- 📟 20x4 I2C LCD arayüzü
+- 🌈 NeoPixel durum geri bildirimi
+- 🔊 Buzzer feedback
+- 📡 MZ-80 sensör senaryosu
 
-## 🔄 Çalışma Mantığı
+## 🧠 Sistem Mantığı
 
-1. Sistem açıldığında parmak izi sensörü, RFID ve LCD başlatılır.
-2. Kullanıcı parmak izini veya RFID kartını okutur.
-3. Kimlik kayıtlıysa kullanıcı bilgisi LCD ekrana yazdırılır.
-4. Başarılı doğrulamada kapı çıkışı aktif edilir ve görsel/sesli geri bildirim verilir.
-5. Tanınmayan girişlerde hata geri bildirimi gösterilir.
-6. Sistem tekrar bekleme ekranına döner.
+```text
+RFID / Parmak İzi → Kimlik eşleştirme → Yetki kontrolü
+                                      ↓
+                              ┌───────┴───────┐
+                              ↓               ↓
+                           Başarılı         Hatalı
+                              ↓               ↓
+                       Kapıyı tetikle     Reddet + feedback
+```
 
-## 📁 Proje Yapısı
+Kimlik doğrulama sonucuna göre LCD, buzzer ve NeoPixel üzerinden kullanıcıya durum bilgisi verilir. Başarılı akışta kapı mekanizması kısa süreliğine tetiklenir.
+
+## 🛠️ Donanım
+
+Arduino • Fingerprint Sensor • RFID RC522 • 20x4 I2C LCD • NeoPixel • MZ-80 • Buzzer • Motor/Röle
+
+## 📚 Kütüphaneler
+
+`Adafruit_Fingerprint` · `RFID` · `SPI` · `Wire` · `LiquidCrystal_I2C` · `Adafruit_NeoPixel`
+
+## ⚙️ Kurulum
+
+1. Arduino IDE'de uygun kartı seçin.
+2. Gerekli kütüphaneleri yükleyin.
+3. RFID, fingerprint, LCD ve çıkış pinlerini kaynak koduyla eşleştirin.
+4. Kendi donanımınızdaki kayıtlı UID/fingerprint değerlerini yerel olarak tanımlayın.
+5. Firmware'i karta yükleyip sensörleri ayrı ayrı test edin.
+
+## 🔐 Güvenlik
+
+Gerçek kullanıcı adı, RFID UID veya biyometrik kayıt bilgileri public repository'de paylaşılmamalıdır. Bu proje eğitim/prototip amaçlıdır; üretim erişim sistemlerinde daha güçlü yetkilendirme ve güvenli veri saklama gerekir.
+
+## 📁 Yapı
 
 ```text
 PARMAK_IZLI_KAPI/
 ├── parmak_izli_kapi/
 │   └── parmak_izli_kapi.ino
+├── docs/
+│   └── flow.svg
 └── README.md
 ```
 
-## ⚙️ Yapılandırma
-
-Kullanıcı kartları ve parmak izi ID'leri kaynak kod içerisinde tanımlanmaktadır. Yeni bir kullanıcı eklerken sensör ID'sinin ve RFID UID değerlerinin doğru şekilde eşleştirilmesi gerekir.
-
-Donanım pinleri ve çevre birimleri de `.ino` dosyasındaki tanımlardan değiştirilebilir.
-
-## ⚠️ Güvenlik Notu
-
-Gerçek bir erişim kontrol sisteminde kart UID'leri, parmak izi ID'leri ve kullanıcı bilgileri kaynak kodunda düz metin olarak tutulmamalıdır. Bu proje eğitim ve prototipleme amacıyla hazırlanmıştır.
-
-## 🚧 Geliştirme Durumu
+## 🚧 Durum
 
 **Prototip / aktif geliştirme**
 
-Gelecekte kullanıcı yönetiminin daha modüler hale getirilmesi, yetkilendirme kayıtlarının kalıcı depolanması ve erişim loglarının tutulması planlanabilir.
+Gelecek: kullanıcı yönetimi, access logs, kalıcı yetki depolama ve daha modüler driver yapısı.
 
-## 📄 Lisans
-
-Bu depoda ayrıca bir lisans belirtilmediği için kullanım koşulları proje sahibinin kararına bağlıdır.
+> Not: Bu depoda ayrı bir LICENSE dosyası belirtilmemiştir.
